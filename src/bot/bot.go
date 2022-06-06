@@ -51,7 +51,7 @@ func variableCheck() {
 	}
 
 	if len(config.CONFIG.TrustedUsersIDs) == 0 {
-		malm.Error("No ApprovedUsersIDs provided in the config file! (This should be your Discord ID along with other people that are allowed to use the bots commands)")
+		malm.Error("No TrustedUsersIDs provided in the config file! (This should be your Discord ID along with other people that are allowed to use the bots commands)")
 		problem = true
 	}
 
