@@ -57,7 +57,7 @@ func createConfig() error {
 		IgnoreBotMessages: true,
 		BotInfo: botInfo{
 			AppID:      "",
-			Permission: 139690691648,
+			Permission: 207878, // https://discordapi.com/permissions.html#207878
 			VersionURL: "https://raw.githubusercontent.com/CarlFlo/blacklisterBot/main/main.go",
 		},
 		Database: database{
