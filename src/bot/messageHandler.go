@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/CarlFlo/blacklisterBot/src/config"
+	"github.com/CarlFlo/blacklisterBot/src/utils"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -15,18 +16,19 @@ func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	// Is the message a command and is the user authorized to use the bot?
-	if !strings.HasPrefix(m.Content, config.CONFIG.BotPrefix) && !isAuthorized(m.Author.ID) {
+	if strings.HasPrefix(m.Content, config.CONFIG.BotPrefix) && utils.IsAuthorized(m.Author.ID) {
+		handleCommand(s, m)
 		return
 	}
 
+	// Check the message for blacklisted content
+	interceptMessage(s, m)
 }
 
-func isAuthorized(discordID string) bool {
+func handleCommand(s *discordgo.Session, m *discordgo.MessageCreate) {
 
-	for _, id := range config.CONFIG.TrustedUsersIDs {
-		if id == discordID {
-			return true
-		}
-	}
-	return false
+}
+
+func interceptMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
+
 }
