@@ -7,23 +7,24 @@ import (
 )
 
 // Discord session
-var CTX *discordgo.Session
+var Session *discordgo.Session
 
 func StartBot() {
 
 	variableCheck()
 
-	// Creates the bot/session
-	CTX, err := discordgo.New("Bot " + config.CONFIG.Token)
+	// Creates the session
+	var err error
+	Session, err = discordgo.New("Bot " + config.CONFIG.Token)
 	if err != nil {
 		malm.Fatal("Error creating Discord session: %s", err)
 	}
 
 	// Adds message handler (https://github.com/bwmarrin/discordgo/blob/37088aefec2241139e59b9b804f193b539be25d6/eventhandlers.go#L937)
-	CTX.AddHandler(messageHandler)
+	Session.AddHandler(messageHandler)
 
 	// Attempts to open connection
-	err = CTX.Open()
+	err = Session.Open()
 	if err != nil {
 		malm.Fatal("%s", err)
 	}
@@ -31,7 +32,7 @@ func StartBot() {
 }
 
 func StopBot() {
-	CTX.Close()
+	Session.Close()
 }
 
 func variableCheck() {
@@ -49,7 +50,7 @@ func variableCheck() {
 		problem = true
 	}
 
-	if len(config.CONFIG.ApprovedUsersIDs) == 0 {
+	if len(config.CONFIG.TrustedUsersIDs) == 0 {
 		malm.Error("No ApprovedUsersIDs provided in the config file! (This should be your Discord ID along with other people that are allowed to use the bots commands)")
 		problem = true
 	}

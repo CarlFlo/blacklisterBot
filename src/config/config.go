@@ -8,12 +8,12 @@ import (
 var CONFIG *configStruct
 
 type configStruct struct {
-	Token             string         `json:"token"`
-	BotPrefix         string         `json:"botPrefix"`
-	ApprovedUsersIDs  map[string]int `json:"approvedUsersIDs"`
-	IgnoreBotMessages bool           `json:"ignoreBotMessages"`
-	BotInfo           botInfo        `json:"botInfo"`
-	Database          database       `json:"database"`
+	Token             string   `json:"token"`
+	BotPrefix         string   `json:"botPrefix"`
+	TrustedUsersIDs   []string `json:"trustedUsersIDs"`
+	IgnoreBotMessages bool     `json:"ignoreBotMessages"`
+	BotInfo           botInfo  `json:"botInfo"`
+	Database          database `json:"database"`
 }
 
 type botInfo struct {
@@ -40,11 +40,7 @@ func readConfig() error {
 		return err
 	}
 
-	if err = json.Unmarshal(file, &CONFIG); err != nil {
-		return err
-	}
-
-	return nil
+	return json.Unmarshal(file, &CONFIG)
 }
 
 func createConfig() error {
@@ -53,7 +49,7 @@ func createConfig() error {
 	configStruct := configStruct{
 		Token:             "",
 		BotPrefix:         ",",
-		ApprovedUsersIDs:  make(map[string]int),
+		TrustedUsersIDs:   []string{},
 		IgnoreBotMessages: true,
 		BotInfo: botInfo{
 			AppID:      "",
