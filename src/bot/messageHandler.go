@@ -5,6 +5,7 @@ import (
 
 	"github.com/CarlFlo/blacklisterBot/src/config"
 	"github.com/CarlFlo/blacklisterBot/src/utils"
+	"github.com/CarlFlo/malm"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -22,13 +23,32 @@ func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	// Check the message for blacklisted content
-	interceptMessage(s, m)
+	checkAttachments(s, m)
 }
 
 func handleCommand(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 }
 
-func interceptMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
+func checkAttachments(s *discordgo.Session, m *discordgo.MessageCreate) {
 
+	for _, att := range m.Message.Attachments {
+
+		switch att.ContentType {
+		case "image/png", "image/jpeg":
+			img, err := handleImage(&att.URL)
+			if err != nil {
+				malm.Error("%s", err)
+			}
+
+			if banned := checkImage(img); banned {
+				malm.Info("Blacklisted image posted by %s", m.Author.Username)
+				s.ChannelMessageDelete(m.ChannelID, m.ID)
+			}
+
+		default:
+			malm.Debug("Unknown content type: %s", att.ContentType)
+		}
+
+	}
 }
