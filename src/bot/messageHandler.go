@@ -14,19 +14,14 @@ func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	// Is the user autorized to use the bot?
-	if !isAutorized(m.Author.ID) {
-		return
-	}
-
-	// Is the message a command?
-	if !strings.HasPrefix(m.Content, config.CONFIG.BotPrefix) {
+	// Is the message a command and is the user authorized to use the bot?
+	if !strings.HasPrefix(m.Content, config.CONFIG.BotPrefix) && !isAuthorized(m.Author.ID) {
 		return
 	}
 
 }
 
-func isAutorized(discordID string) bool {
+func isAuthorized(discordID string) bool {
 
 	for _, id := range config.CONFIG.TrustedUsersIDs {
 		if id == discordID {
