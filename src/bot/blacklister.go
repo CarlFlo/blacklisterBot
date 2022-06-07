@@ -19,7 +19,6 @@ func checkImage(img *image.Image) bool {
 	// Check the SHA-1 first
 
 	found, err := sha1Check(img)
-	malm.Info("SHA-1: %v", found)
 	if err != nil {
 		malm.Error("%s", err)
 	} else if found {

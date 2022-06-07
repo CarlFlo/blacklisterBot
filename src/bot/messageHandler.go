@@ -43,12 +43,19 @@ func checkAttachments(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 			if banned := checkImage(img); banned {
 				malm.Info("Blacklisted image posted by %s", m.Author.Username)
-				s.ChannelMessageDelete(m.ChannelID, m.ID)
+				removeMessage(s, m)
 			}
 
 		default:
 			malm.Debug("Unknown content type: %s", att.ContentType)
 		}
 
+	}
+}
+
+func removeMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
+
+	if err := s.ChannelMessageDelete(m.ChannelID, m.ID); err != nil {
+		malm.Error("Could not delete the message: %s", err)
 	}
 }
