@@ -12,7 +12,7 @@ import (
 
 var DB *gorm.DB
 
-const resetDatabaseOnStart = true
+const resetDatabaseOnStart = false
 
 func connectToDB() error {
 

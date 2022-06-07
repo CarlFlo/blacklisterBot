@@ -10,12 +10,21 @@ import (
 	"net/http"
 
 	"github.com/CarlFlo/blacklisterBot/src/database"
+	"github.com/CarlFlo/malm"
 	"github.com/corona10/goimagehash"
 )
 
 func checkImage(img *image.Image) bool {
 
 	// Check the SHA-1 first
+
+	found, err := sha1Check(img)
+	malm.Info("SHA-1: %v", found)
+	if err != nil {
+		malm.Error("%s", err)
+	} else if found {
+		return true
+	}
 
 	// check average
 
@@ -41,9 +50,7 @@ func sha1Check(img *image.Image) (bool, error) {
 	hash := fmt.Sprintf("%x", hasher.Sum(nil))
 
 	// Check database
-	found := database.SearchSHA1(hash)
-
-	return found, nil
+	return database.SearchSHA1(hash)
 }
 
 func averageCheck(img *image.Image) (bool, error) {

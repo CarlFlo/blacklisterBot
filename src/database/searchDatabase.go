@@ -1,16 +1,17 @@
 package database
 
-import "github.com/corona10/goimagehash"
+import (
+	"github.com/corona10/goimagehash"
+)
 
-func SearchSHA1(h string) bool {
+func SearchSHA1(h string) (bool, error) {
 
-	var b Blacklist
+	var count int64
+	if err := DB.Model(&Blacklist{}).Limit(1).Where("sha1 = ?", h).Count(&count).Error; err != nil {
+		return false, err
+	}
 
-	DB.Where("sha1 = ?", h).First(b)
-
-	// Check if anything returned
-
-	return false
+	return count > 0, nil
 }
 
 func SearchAverage(h *goimagehash.ImageHash) bool {
