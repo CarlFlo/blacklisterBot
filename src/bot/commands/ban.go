@@ -15,12 +15,17 @@ import (
 
 func Ban(s *discordgo.Session, m *discordgo.MessageCreate, args *[]string) {
 
+	for _, att := range m.Attachments {
+		*args = append(*args, att.URL)
+	}
+
 	if len(*args) == 1 {
 		// No URL provided. Ban the last URL found in the n previous messages message.
 		utils.SendMessageFailure(s, m, "No URL provided")
 		return
 	}
 
+	// itterate over all the potential URLs provided
 	link := (*args)[1]
 
 	// Parse the link
