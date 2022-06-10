@@ -14,34 +14,38 @@ import (
 )
 
 // CheckImage checks if the image is blacklisted
-func checkImage(img *image.Image) bool {
+func checkImage(img *image.Image) (bool, string) {
 
 	var found bool
 	var err error
-
+	var sha1Hash string
 	// Check the SHA-1 first
 
-	found, err = sha1Check(img)
+	//sha1Hash, found, err = sha1Check(img)
+	found, err = sha1Check(img, &sha1Hash)
 	if err != nil {
 		malm.Error("%s", err)
 	} else if found {
-		return true
+		return true, "SHA-1"
 	}
 
+	var method string
+
 	// check Average, Difference & Perception
-	found, err = averageDifferencePerceptionCheck(img)
+	found, err = averageDifferencePerceptionCheck(img, &method)
 	if err != nil {
 		malm.Error("%s", err)
 	}
 
 	if found {
 		// Save SHA-1 to database with the match ID are the foreign key
+		malm.Info("Found match: %s", sha1Hash)
 	}
 
-	return found
+	return found, method
 }
 
-func sha1Check(img *image.Image) (bool, error) {
+func sha1Check(img *image.Image, hash *string) (bool, error) {
 
 	// convert *image.Image to a []byte
 	buf := new(bytes.Buffer)
@@ -52,13 +56,13 @@ func sha1Check(img *image.Image) (bool, error) {
 
 	hasher := sha1.New()
 	hasher.Write(buf.Bytes())
-	hash := fmt.Sprintf("%x", hasher.Sum(nil))
+	*hash = fmt.Sprintf("%x", hasher.Sum(nil))
 
 	// Check database
 	return database.SearchSHA1(hash)
 }
 
-func averageDifferencePerceptionCheck(img *image.Image) (bool, error) {
+func averageDifferencePerceptionCheck(img *image.Image, method *string) (bool, error) {
 
 	aHash, err := goimagehash.AverageHash(*img)
 	if err != nil {
@@ -75,7 +79,7 @@ func averageDifferencePerceptionCheck(img *image.Image) (bool, error) {
 		return false, err
 	}
 
-	found, err := database.SearchAveragePerceptionDifference(aHash, dHash, pHash)
+	found, err := database.SearchAveragePerceptionDifference(aHash, dHash, pHash, method)
 	if err != nil {
 		return false, err
 	}

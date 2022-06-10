@@ -1,12 +1,13 @@
 package database
 
 import (
+	"fmt"
+
 	"github.com/CarlFlo/blacklisterBot/src/config"
-	"github.com/CarlFlo/malm"
 	"github.com/corona10/goimagehash"
 )
 
-func SearchSHA1(h string) (bool, error) {
+func SearchSHA1(h *string) (bool, error) {
 
 	var count int64
 	if err := DB.Model(&Blacklist{}).Limit(1).Where("sha1 = ?", h).Count(&count).Error; err != nil {
@@ -16,12 +17,10 @@ func SearchSHA1(h string) (bool, error) {
 	return count > 0, nil
 }
 
-func SearchAveragePerceptionDifference(aHash, dHash, pHash *goimagehash.ImageHash) (bool, error) {
+func SearchAveragePerceptionDifference(aHash, dHash, pHash *goimagehash.ImageHash, method *string) (bool, error) {
 
 	i := 0
 	queryMax := 50
-
-	// TODO: fix unexpected EOF
 
 	for {
 
@@ -44,7 +43,7 @@ func SearchAveragePerceptionDifference(aHash, dHash, pHash *goimagehash.ImageHas
 			}
 
 			if distance <= config.CONFIG.Thresholds.Average {
-				malm.Debug("Average distance: %d <= %d", distance, config.CONFIG.Thresholds.Average)
+				*method = fmt.Sprintf("Average - Distance %d max %d", distance, config.CONFIG.Thresholds.Average)
 				return true, nil
 			}
 
@@ -56,7 +55,7 @@ func SearchAveragePerceptionDifference(aHash, dHash, pHash *goimagehash.ImageHas
 			}
 
 			if distance <= config.CONFIG.Thresholds.Perception {
-				malm.Debug("Perception distance: %d <= %d", distance, config.CONFIG.Thresholds.Perception)
+				*method = fmt.Sprintf("Perception - Distance %d max %d", distance, config.CONFIG.Thresholds.Perception)
 				return true, nil
 			}
 
@@ -68,7 +67,7 @@ func SearchAveragePerceptionDifference(aHash, dHash, pHash *goimagehash.ImageHas
 			}
 
 			if distance <= config.CONFIG.Thresholds.Difference {
-				malm.Debug("Difference distance: %d <= %d", distance, config.CONFIG.Thresholds.Difference)
+				*method = fmt.Sprintf("Difference - Distance %d max %d", distance, config.CONFIG.Thresholds.Difference)
 				return true, nil
 			}
 		}

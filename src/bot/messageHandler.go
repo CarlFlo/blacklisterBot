@@ -70,9 +70,9 @@ func check(s *discordgo.Session, m *discordgo.MessageCreate, link *string) {
 		malm.Error("%s", err)
 	}
 
-	if banned := checkImage(img); banned {
+	if banned, method := checkImage(img); banned {
 		if config.CONFIG.Settings.LogRemovalInConsole {
-			malm.Info("Blacklisted image posted by %s", m.Author.Username)
+			malm.Info("Blacklisted image posted by %s [Method: %s]", m.Author.Username, method)
 		}
 		utils.RemoveMessage(s, m)
 	}
