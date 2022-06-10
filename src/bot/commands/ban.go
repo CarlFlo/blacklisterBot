@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"image"
 	"net/url"
+	"strings"
 
 	"github.com/CarlFlo/blacklisterBot/src/database"
 	"github.com/CarlFlo/blacklisterBot/src/utils"
@@ -48,8 +49,17 @@ func Ban(s *discordgo.Session, m *discordgo.MessageCreate, args *[]string) {
 		return
 	}
 
-	blacklist.Save()
+	if err := blacklist.Save(); err != nil {
+		if strings.Contains(err.Error(), "UNIQUE constraint failed") {
+			go utils.SendMessageNeutral(s, m, "Already banned")
+		} else {
+			utils.SendDirectMessage(s, m, fmt.Sprintf("Unhandled DB error: '%s'", err))
+			malm.Error("Unhandled DB error: '%s'", err)
+			return
+		}
+	} else {
+		go utils.SendMessageSuccess(s, m, "Ban successful")
+	}
 
-	go utils.RemoveMessage(s, m)
-	go utils.SendMessageSuccess(s, m, "Ban successful")
+	utils.RemoveMessage(s, m)
 }

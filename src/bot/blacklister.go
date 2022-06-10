@@ -13,6 +13,7 @@ import (
 	"github.com/corona10/goimagehash"
 )
 
+// CheckImage checks if the image is blacklisted
 func checkImage(img *image.Image) bool {
 
 	var found bool
@@ -31,11 +32,13 @@ func checkImage(img *image.Image) bool {
 	found, err = averageDifferencePerceptionCheck(img)
 	if err != nil {
 		malm.Error("%s", err)
-	} else if found {
-		return true
 	}
 
-	return false
+	if found {
+		// Save SHA-1 to database with the match ID are the foreign key
+	}
+
+	return found
 }
 
 func sha1Check(img *image.Image) (bool, error) {

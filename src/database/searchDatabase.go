@@ -1,9 +1,6 @@
 package database
 
 import (
-	"bytes"
-	"encoding/json"
-
 	"github.com/CarlFlo/blacklisterBot/src/config"
 	"github.com/CarlFlo/malm"
 	"github.com/corona10/goimagehash"
@@ -24,6 +21,8 @@ func SearchAveragePerceptionDifference(aHash, dHash, pHash *goimagehash.ImageHas
 	i := 0
 	queryMax := 50
 
+	// TODO: fix unexpected EOF
+
 	for {
 
 		var blacklist []Blacklist
@@ -36,15 +35,9 @@ func SearchAveragePerceptionDifference(aHash, dHash, pHash *goimagehash.ImageHas
 			var hash *goimagehash.ImageHash
 			var distance int
 			var err error
-			var buf bytes.Buffer
 
 			// Average
-			createIOReader(&buf, e.getAverage(), int(goimagehash.AHash))
-
-			hash, err = goimagehash.LoadImageHash(&buf)
-			if err != nil {
-				return false, err
-			}
+			hash = goimagehash.NewImageHash(e.getAverage(), goimagehash.AHash)
 			distance, err = hash.Distance(aHash)
 			if err != nil {
 				return false, err
@@ -56,12 +49,7 @@ func SearchAveragePerceptionDifference(aHash, dHash, pHash *goimagehash.ImageHas
 			}
 
 			// Perception
-			createIOReader(&buf, e.getDifference(), int(goimagehash.PHash))
-
-			hash, err = goimagehash.LoadImageHash(&buf)
-			if err != nil {
-				return false, err
-			}
+			hash = goimagehash.NewImageHash(e.getDifference(), goimagehash.PHash)
 			distance, err = hash.Distance(pHash)
 			if err != nil {
 				return false, err
@@ -73,12 +61,7 @@ func SearchAveragePerceptionDifference(aHash, dHash, pHash *goimagehash.ImageHas
 			}
 
 			// Difference
-			createIOReader(&buf, e.getPerception(), int(goimagehash.DHash))
-
-			hash, err = goimagehash.LoadImageHash(&buf)
-			if err != nil {
-				return false, err
-			}
+			hash = goimagehash.NewImageHash(e.getPerception(), goimagehash.DHash)
 			distance, err = hash.Distance(dHash)
 			if err != nil {
 				return false, err
@@ -99,17 +82,4 @@ func SearchAveragePerceptionDifference(aHash, dHash, pHash *goimagehash.ImageHas
 	}
 
 	return false, nil
-}
-
-func createIOReader(buf *bytes.Buffer, hash uint64, kind int) error {
-
-	type E struct {
-		Hash uint64
-		Kind int
-	}
-
-	return json.NewEncoder(buf).Encode(E{
-		Hash: hash,
-		Kind: kind,
-	})
 }

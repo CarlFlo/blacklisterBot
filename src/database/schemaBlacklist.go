@@ -26,11 +26,9 @@ func (Blacklist) TableName() string {
 }
 
 // Saves the data to the database
-func (b *Blacklist) Save() {
+func (b *Blacklist) Save() error {
 	tx := DB.Save(&b)
-	if tx.Error != nil {
-		malm.Error("%s", tx.Error)
-	}
+	return tx.Error
 }
 
 func (b *Blacklist) DeleteEntry() {
