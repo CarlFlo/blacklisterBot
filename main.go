@@ -59,3 +59,5 @@ func main() {
 	close(sc)
 	bot.StopBot()
 }
+
+// https://discordapp.com/oauth2/authorize?&client_id=984944576294944768&scope=bot&permissions=142342

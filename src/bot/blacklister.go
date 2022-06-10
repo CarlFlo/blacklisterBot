@@ -6,30 +6,34 @@ import (
 	"fmt"
 	"image"
 	"image/jpeg"
-	"io/ioutil"
-	"net/http"
 
 	"github.com/CarlFlo/blacklisterBot/src/database"
+	"github.com/CarlFlo/blacklisterBot/src/utils"
 	"github.com/CarlFlo/malm"
 	"github.com/corona10/goimagehash"
 )
 
 func checkImage(img *image.Image) bool {
 
+	var found bool
+	var err error
+
 	// Check the SHA-1 first
 
-	found, err := sha1Check(img)
+	found, err = sha1Check(img)
 	if err != nil {
 		malm.Error("%s", err)
 	} else if found {
 		return true
 	}
 
-	// check average
-
-	// check difference
-
-	// check perception
+	// check Average, Difference & Perception
+	found, err = averageDifferencePerceptionCheck(img)
+	if err != nil {
+		malm.Error("%s", err)
+	} else if found {
+		return true
+	}
 
 	return false
 }
@@ -37,7 +41,6 @@ func checkImage(img *image.Image) bool {
 func sha1Check(img *image.Image) (bool, error) {
 
 	// convert *image.Image to a []byte
-
 	buf := new(bytes.Buffer)
 	err := jpeg.Encode(buf, *img, nil)
 	if err != nil {
@@ -52,14 +55,27 @@ func sha1Check(img *image.Image) (bool, error) {
 	return database.SearchSHA1(hash)
 }
 
-func averageCheck(img *image.Image) (bool, error) {
+func averageDifferencePerceptionCheck(img *image.Image) (bool, error) {
 
-	averageHash, err := goimagehash.AverageHash(*img)
+	aHash, err := goimagehash.AverageHash(*img)
 	if err != nil {
 		return false, err
 	}
 
-	found := database.SearchAverage(averageHash)
+	dHash, err := goimagehash.DifferenceHash(*img)
+	if err != nil {
+		return false, err
+	}
+
+	pHash, err := goimagehash.PerceptionHash(*img)
+	if err != nil {
+		return false, err
+	}
+
+	found, err := database.SearchAveragePerceptionDifference(aHash, dHash, pHash)
+	if err != nil {
+		return false, err
+	}
 
 	return found, nil
 }
@@ -67,7 +83,7 @@ func averageCheck(img *image.Image) (bool, error) {
 func handleImage(url *string) (*image.Image, error) {
 
 	// converty to []byte to image.Image
-	b, err := getAttatchment(url)
+	b, err := utils.FetchFromURL(url)
 	if err != nil {
 		return nil, err
 	}
@@ -78,16 +94,4 @@ func handleImage(url *string) (*image.Image, error) {
 	}
 
 	return &img, nil
-}
-
-func getAttatchment(url *string) ([]byte, error) {
-
-	resp, err := http.Get(*url)
-	if err != nil {
-		return []byte{}, err
-	} else if resp.StatusCode != 200 {
-		return []byte{}, fmt.Errorf("status code error: %d %s", resp.StatusCode, resp.Status)
-	}
-
-	return ioutil.ReadAll(resp.Body)
 }

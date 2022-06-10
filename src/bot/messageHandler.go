@@ -1,8 +1,10 @@
 package bot
 
 import (
+	"regexp"
 	"strings"
 
+	"github.com/CarlFlo/blacklisterBot/src/bot/commands"
 	"github.com/CarlFlo/blacklisterBot/src/config"
 	"github.com/CarlFlo/blacklisterBot/src/utils"
 	"github.com/CarlFlo/malm"
@@ -28,12 +30,38 @@ func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 func handleCommand(s *discordgo.Session, m *discordgo.MessageCreate) {
 
+	input := strings.TrimPrefix(m.Message.Content, config.CONFIG.BotPrefix)
+
+	input = strings.ToLower(input)
+
+	args := strings.Split(input, " ")
+
+	switch args[0] {
+	case "ban":
+		commands.Ban(s, m, &args)
+	case "unban":
+		commands.Unban(&args)
+	default:
+		malm.Debug("Unknown command: %s", args[0])
+	}
+
 }
 
 func checkAttachments(s *discordgo.Session, m *discordgo.MessageCreate) {
 
-	for _, att := range m.Message.Attachments {
+	for _, url := range findURLInMessage(m) {
+		img, err := handleImage(&url)
+		if err != nil {
+			malm.Error("%s", err)
+		}
 
+		if banned := checkImage(img); banned {
+			malm.Info("Blacklisted image posted by %s", m.Author.Username)
+			utils.RemoveMessage(s, m)
+		}
+	}
+
+	for _, att := range m.Message.Attachments {
 		switch att.ContentType {
 		case "image/png", "image/jpeg":
 			img, err := handleImage(&att.URL)
@@ -43,19 +71,19 @@ func checkAttachments(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 			if banned := checkImage(img); banned {
 				malm.Info("Blacklisted image posted by %s", m.Author.Username)
-				removeMessage(s, m)
+				utils.RemoveMessage(s, m)
 			}
 
 		default:
 			malm.Debug("Unknown content type: %s", att.ContentType)
 		}
-
 	}
 }
 
-func removeMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
+func findURLInMessage(m *discordgo.MessageCreate) []string {
 
-	if err := s.ChannelMessageDelete(m.ChannelID, m.ID); err != nil {
-		malm.Error("Could not delete the message: %s", err)
-	}
+	// regex
+	r := regexp.MustCompile(`(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|jpeg|png)`)
+	matches := r.FindAllString(m.Message.Content, -1)
+	return matches
 }

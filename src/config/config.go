@@ -8,12 +8,13 @@ import (
 var CONFIG *configStruct
 
 type configStruct struct {
-	Token             string   `json:"token"`
-	BotPrefix         string   `json:"botPrefix"`
-	TrustedUsersIDs   []string `json:"trustedUsersIDs"`
-	IgnoreBotMessages bool     `json:"ignoreBotMessages"`
-	BotInfo           botInfo  `json:"botInfo"`
-	Database          database `json:"database"`
+	Token             string     `json:"token"`
+	BotPrefix         string     `json:"botPrefix"`
+	TrustedUsersIDs   []string   `json:"trustedUsersIDs"`
+	Thresholds        thresholds `json:"thresholds"`
+	IgnoreBotMessages bool       `json:"ignoreBotMessages"`
+	BotInfo           botInfo    `json:"botInfo"`
+	Database          database   `json:"database"`
 }
 
 type botInfo struct {
@@ -24,6 +25,12 @@ type botInfo struct {
 
 type database struct {
 	FileName string `json:"filename"`
+}
+
+type thresholds struct {
+	Average    int `json:"average"`
+	Difference int `json:"difference"`
+	Perception int `json:"perception"`
 }
 
 // ReloadConfig is a wrapper function for reloading the config. For clarity
@@ -50,10 +57,11 @@ func createConfig() error {
 		Token:             "",
 		BotPrefix:         ",",
 		TrustedUsersIDs:   []string{},
+		Thresholds:        thresholds{Average: 10, Difference: 10, Perception: 10},
 		IgnoreBotMessages: true,
 		BotInfo: botInfo{
 			AppID:      "",
-			Permission: 207878, // https://discordapi.com/permissions.html#207878
+			Permission: 142342, // https://discordapi.com/permissions.html#142342
 			VersionURL: "https://raw.githubusercontent.com/CarlFlo/blacklisterBot/main/main.go",
 		},
 		Database: database{
