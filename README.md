@@ -22,8 +22,8 @@
 ## Commands
 
 * Reload - Updates the settings from the configuration file
-* Ban
-* Unban
+* Ban - Bans the provided image (PNG, JPG). Can be an URL or uplaoded as an attachment
+* Unban (Not implemented yet)
 
 ## Setup
 
