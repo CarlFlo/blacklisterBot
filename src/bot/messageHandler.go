@@ -50,33 +50,31 @@ func handleCommand(s *discordgo.Session, m *discordgo.MessageCreate) {
 func checkAttachments(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	for _, url := range findURLInMessage(m) {
-		img, err := handleImage(&url)
-		if err != nil {
-			malm.Error("%s", err)
-		}
-
-		if banned := checkImage(img); banned {
-			malm.Info("Blacklisted image posted by %s", m.Author.Username)
-			utils.RemoveMessage(s, m)
-		}
+		check(s, m, &url)
 	}
 
 	for _, att := range m.Message.Attachments {
 		switch att.ContentType {
 		case "image/png", "image/jpeg":
-			img, err := handleImage(&att.URL)
-			if err != nil {
-				malm.Error("%s", err)
-			}
-
-			if banned := checkImage(img); banned {
-				malm.Info("Blacklisted image posted by %s", m.Author.Username)
-				utils.RemoveMessage(s, m)
-			}
+			check(s, m, &att.URL)
 
 		default:
 			malm.Debug("Unknown content type: %s", att.ContentType)
 		}
+	}
+}
+
+func check(s *discordgo.Session, m *discordgo.MessageCreate, link *string) {
+	img, err := handleImage(link)
+	if err != nil {
+		malm.Error("%s", err)
+	}
+
+	if banned := checkImage(img); banned {
+		if config.CONFIG.Settings.LogRemovalInConsole {
+			malm.Info("Blacklisted image posted by %s", m.Author.Username)
+		}
+		utils.RemoveMessage(s, m)
 	}
 }
 

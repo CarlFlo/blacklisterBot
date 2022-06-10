@@ -15,6 +15,7 @@ type configStruct struct {
 	IgnoreBotMessages bool       `json:"ignoreBotMessages"`
 	BotInfo           botInfo    `json:"botInfo"`
 	Database          database   `json:"database"`
+	Settings          settings   `json:"settings"`
 }
 
 type botInfo struct {
@@ -31,6 +32,10 @@ type thresholds struct {
 	Average    int `json:"average"`
 	Difference int `json:"difference"`
 	Perception int `json:"perception"`
+}
+
+type settings struct {
+	LogRemovalInConsole bool `json:"logRemovalInConsole"`
 }
 
 // ReloadConfig is a wrapper function for reloading the config. For clarity
@@ -66,6 +71,9 @@ func createConfig() error {
 		},
 		Database: database{
 			FileName: "blacklist.db",
+		},
+		Settings: settings{
+			LogRemovalInConsole: true,
 		},
 	}
 

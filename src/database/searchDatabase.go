@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 
 	"github.com/CarlFlo/blacklisterBot/src/config"
+	"github.com/CarlFlo/malm"
 	"github.com/corona10/goimagehash"
 )
 
@@ -50,6 +51,7 @@ func SearchAveragePerceptionDifference(aHash, dHash, pHash *goimagehash.ImageHas
 			}
 
 			if distance <= config.CONFIG.Thresholds.Average {
+				malm.Debug("Average distance: %d <= %d", distance, config.CONFIG.Thresholds.Average)
 				return true, nil
 			}
 
@@ -66,6 +68,7 @@ func SearchAveragePerceptionDifference(aHash, dHash, pHash *goimagehash.ImageHas
 			}
 
 			if distance <= config.CONFIG.Thresholds.Perception {
+				malm.Debug("Perception distance: %d <= %d", distance, config.CONFIG.Thresholds.Perception)
 				return true, nil
 			}
 
@@ -82,6 +85,7 @@ func SearchAveragePerceptionDifference(aHash, dHash, pHash *goimagehash.ImageHas
 			}
 
 			if distance <= config.CONFIG.Thresholds.Difference {
+				malm.Debug("Difference distance: %d <= %d", distance, config.CONFIG.Thresholds.Difference)
 				return true, nil
 			}
 		}

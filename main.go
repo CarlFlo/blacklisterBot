@@ -19,7 +19,7 @@ func init() {
 
 	utils.Clear()
 
-	malm.SetLogVerboseBitmask(0)
+	//malm.SetLogVerboseBitmask(0)
 
 	if err := config.LoadConfiguration(); err != nil {
 		malm.Fatal("Error loading configuration: %v", err)

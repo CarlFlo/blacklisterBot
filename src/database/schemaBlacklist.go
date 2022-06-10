@@ -40,7 +40,7 @@ func (b *Blacklist) DeleteEntry() {
 func (b *Blacklist) getAverage() uint64 {
 
 	// ParseInt uint64
-	i, err := strconv.ParseUint(b.AverageHash, 16, 64)
+	i, err := strconv.ParseUint(b.AverageHash, 10, 64)
 	if err != nil {
 		malm.Error("%s", err)
 	}
@@ -50,7 +50,7 @@ func (b *Blacklist) getAverage() uint64 {
 func (b *Blacklist) getDifference() uint64 {
 
 	// ParseInt uint64
-	i, err := strconv.ParseUint(b.DifferenceHash, 16, 64)
+	i, err := strconv.ParseUint(b.DifferenceHash, 10, 64)
 	if err != nil {
 		malm.Error("%s", err)
 	}
@@ -60,7 +60,7 @@ func (b *Blacklist) getDifference() uint64 {
 func (b *Blacklist) getPerception() uint64 {
 
 	// ParseInt uint64
-	i, err := strconv.ParseUint(b.PerceptionHash, 16, 64)
+	i, err := strconv.ParseUint(b.PerceptionHash, 10, 64)
 	if err != nil {
 		malm.Error("%s", err)
 	}

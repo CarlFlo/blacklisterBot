@@ -15,7 +15,7 @@ import (
 func Ban(s *discordgo.Session, m *discordgo.MessageCreate, args *[]string) {
 
 	if len(*args) == 1 {
-		// No URL provided
+		// No URL provided. Ban the last URL found in the n previous messages message.
 		utils.SendMessageFailure(s, m, "No URL provided")
 		return
 	}
