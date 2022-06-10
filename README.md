@@ -16,8 +16,26 @@
 
 ## About
 
+This Discord bot can automatically remove images that are posted.
+Once the image has been checked against the database and identified as being banned so will it be removed.
+
+The bot checks images with four techniques and can thus detect alterations, making attemps to fool the bot more difficult.
+
+Each individual detection thresholds can be edited in the configuration file.
+
+Detection methods used:
+1. [SHA-1 Hash](https://en.wikipedia.org/wiki/SHA-1)
+2. Average hashing
+3. Difference hashing
+4. Perception hashing
+
+You can read more about these methods [here](https://www.hackerfactor.com/blog/index.php?/archives/432-Looks-Like-It.html)
 
 ## Features
+
+* Automatic removal of inappropriate images
+
+* Smart detection that can detect subtle changes
 
 ## Commands
 
@@ -55,6 +73,9 @@ Running the bot will create a `config.json` file in the directory where it was r
 
 Insert:
 1. The bot token
-2. The Discord user ID for the user(s) that are allowed to run the commands 
+2. The Discord user ID for the user(s) that are allowed to run the commands
+3. The bots ID
 
 ## Todo
+
+[ ] List of channels that the bot will ignore alt. listen to
