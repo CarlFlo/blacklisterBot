@@ -41,6 +41,8 @@ func handleCommand(s *discordgo.Session, m *discordgo.MessageCreate) {
 		commands.Ban(s, m, &args)
 	case "unban":
 		commands.Unban(&args)
+	case "reload":
+		commands.Reload(s, m)
 	default:
 		malm.Debug("Unknown command: %s", args[0])
 	}
