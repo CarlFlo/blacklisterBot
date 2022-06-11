@@ -78,6 +78,14 @@ Insert:
 2. The Discord user ID for the user(s) that are allowed to run the commands
 3. The bots ID
 
+#### Thresholds
+Each individual detection thresholds can be edited in the configuration file.
+
+A thresholds of zero means that it is a complete match. Ten seems like like a good default value.
+But you may have to tweak the thresholds to your liking.
+
+Going too high (around 30) will yeild a lot of false positives.
+
 ## Todo
 
 - [X] Basic functionality
