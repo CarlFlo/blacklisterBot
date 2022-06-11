@@ -103,7 +103,7 @@ func loadConfiguration() error {
 	return nil
 }
 
-// Loads the configuration
+// Loads the configuration.
 // Any problems will be logged
 func Load() {
 

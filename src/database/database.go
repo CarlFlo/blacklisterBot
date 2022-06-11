@@ -52,7 +52,7 @@ func InitializeDatabase() error {
 	return nil
 }
 
-// Loads the database
+// Loads the database.
 // Any problems will be logged
 func Load() {
 

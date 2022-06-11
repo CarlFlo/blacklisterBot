@@ -40,7 +40,7 @@ func handleCommand(s *discordgo.Session, m *discordgo.MessageCreate) {
 	case "ban":
 		commands.Ban(s, m, &args)
 	case "unban":
-		commands.Unban(&args)
+		commands.Unban(s, m, &args)
 	case "reload":
 		commands.Reload(s, m)
 	default:

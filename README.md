@@ -49,7 +49,7 @@ Supported formats are: PNG & JPEG
 
 * Unban 
 
-(Not implemented yet)
+Attach the image or link to the image you want to unban
 
 * Reload
 
