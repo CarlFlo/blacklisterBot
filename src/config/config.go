@@ -24,6 +24,7 @@ type botInfo struct {
 	AppID      string `json:"appID"`
 	Permission uint64 `json:"permission"`
 	VersionURL string `json:"versionURL"`
+	DepositURL string `json:"depositURL"`
 }
 
 type database struct {
@@ -71,6 +72,7 @@ func createConfig() error {
 			AppID:      "",
 			Permission: 142342, // https://discordapi.com/permissions.html#142342
 			VersionURL: "https://raw.githubusercontent.com/CarlFlo/blacklisterBot/main/main.go",
+			DepositURL: "https://github.com/CarlFlo/blacklisterBot",
 		},
 		Database: database{
 			FileName: "blacklist.db",
