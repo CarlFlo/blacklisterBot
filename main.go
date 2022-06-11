@@ -18,29 +18,11 @@ const CurrentVersion = "2022-06-11"
 func init() {
 
 	utils.Clear()
-
 	malm.SetLogVerboseBitmask(35) // Debug, Info & Warning
 
-	if err := config.LoadConfiguration(); err != nil {
-		malm.Fatal("Error loading configuration: %v", err)
-	}
-
-	if err := database.SetupDatabase(); err != nil {
-		malm.Fatal("Database initialization error: %s", err)
-	}
-
-	// Handles checking if there is an update available for the bot
-	upToDate, githubVersion, err := utils.BotVersonHandler(CurrentVersion)
-	if err != nil {
-		malm.Error("%s", err)
-	}
-
-	if upToDate {
-		malm.Debug("Version %s", CurrentVersion)
-	} else {
-		malm.Info("New version available! New version: '%s'; Your version: '%s'", githubVersion, CurrentVersion)
-	}
-
+	config.Load()
+	database.Load()
+	utils.CheckVersion(CurrentVersion)
 }
 
 func main() {

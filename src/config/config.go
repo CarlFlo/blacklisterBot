@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"time"
+
+	"github.com/CarlFlo/malm"
 )
 
 var CONFIG *configStruct
@@ -86,7 +88,7 @@ func createConfig() error {
 	return err
 }
 
-func LoadConfiguration() error {
+func loadConfiguration() error {
 
 	if err := readConfig(); err != nil {
 		if err = createConfig(); err != nil {
@@ -97,4 +99,14 @@ func LoadConfiguration() error {
 		}
 	}
 	return nil
+}
+
+// Loads the configuration
+// Any problems will be logged
+func Load() {
+
+	if err := loadConfiguration(); err != nil {
+		malm.Fatal("Error loading configuration: %v", err)
+	}
+
 }

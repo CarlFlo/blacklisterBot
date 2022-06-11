@@ -42,7 +42,7 @@ func connectToDB() error {
 
 }
 
-func SetupDatabase() error {
+func InitializeDatabase() error {
 
 	err := connectToDB()
 	if err != nil {
@@ -50,4 +50,13 @@ func SetupDatabase() error {
 	}
 
 	return nil
+}
+
+// Loads the database
+// Any problems will be logged
+func Load() {
+
+	if err := InitializeDatabase(); err != nil {
+		malm.Fatal("Database initialization error: %s", err)
+	}
 }
