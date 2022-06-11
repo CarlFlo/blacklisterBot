@@ -19,7 +19,7 @@
 This Discord bot can automatically remove images that are posted.
 Once the image has been checked against the database and identified as being banned so will it be removed.
 
-The bot checks images with four techniques and can thus detect alterations, making attemps to fool the bot more difficult.
+The bot checks images with four techniques and can thus detect alterations, making attemps to fool the bot and bypass the blacklist difficult.
 
 Each individual detection thresholds can be edited in the configuration file.
 
@@ -30,6 +30,8 @@ Detection methods used:
 4. Perception hashing
 
 You can read more about these methods [here](https://www.hackerfactor.com/blog/index.php?/archives/432-Looks-Like-It.html)
+
+All data is stored in a local SQLite database
 
 ## Features
 
@@ -78,4 +80,7 @@ Insert:
 
 ## Todo
 
-[ ] List of channels that the bot will ignore alt. listen to
+- [X] Basic functionality
+- [ ] List of channels that the bot will ignore alt. listen to
+- [ ] Make the bot aware of what discord server it is in
+- [ ] Automated action once banned image is posted (banned, kick, timeout etc)
