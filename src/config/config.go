@@ -3,6 +3,7 @@ package config
 import (
 	"encoding/json"
 	"io/ioutil"
+	"time"
 )
 
 var CONFIG *configStruct
@@ -35,7 +36,8 @@ type thresholds struct {
 }
 
 type settings struct {
-	LogRemovalInConsole bool `json:"logRemovalInConsole"`
+	LogRemovalInConsole   bool          `json:"logRemovalInConsole"`
+	RemoveBotMessageAfter time.Duration `json:"removeBotMessageAfter"`
 }
 
 // ReloadConfig is a wrapper function for reloading the config. For clarity
@@ -73,7 +75,8 @@ func createConfig() error {
 			FileName: "blacklist.db",
 		},
 		Settings: settings{
-			LogRemovalInConsole: true,
+			LogRemovalInConsole:   true,
+			RemoveBotMessageAfter: 3,
 		},
 	}
 

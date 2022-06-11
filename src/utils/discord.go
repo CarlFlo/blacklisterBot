@@ -1,6 +1,9 @@
 package utils
 
 import (
+	"time"
+
+	"github.com/CarlFlo/blacklisterBot/src/config"
 	"github.com/CarlFlo/malm"
 	"github.com/bwmarrin/discordgo"
 )
@@ -35,6 +38,21 @@ func sendMessageEmbed(s *discordgo.Session, m *discordgo.MessageCreate, content 
 func RemoveMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	if err := s.ChannelMessageDelete(m.ChannelID, m.ID); err != nil {
+		malm.Error("Could not delete the message: %s", err)
+	}
+}
+
+// Removes a message after n seconds.
+// If RemoveBotMessageAfter in the config is -1 then the message wont be deleted
+func RemoveMessageAfter(s *discordgo.Session, channelID, messageID string) {
+
+	if config.CONFIG.Settings.RemoveBotMessageAfter < 0 {
+		return
+	}
+
+	time.Sleep(config.CONFIG.Settings.RemoveBotMessageAfter * time.Second)
+
+	if err := s.ChannelMessageDelete(channelID, messageID); err != nil {
 		malm.Error("Could not delete the message: %s", err)
 	}
 }

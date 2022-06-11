@@ -21,49 +21,59 @@ func Ban(s *discordgo.Session, m *discordgo.MessageCreate, args *[]string) {
 
 	if len(*args) == 1 {
 		// No URL provided. Ban the last URL found in the n previous messages message.
-		utils.SendMessageFailure(s, m, "No URL provided")
+		utils.SendMessageFailure(s, m, "No image URL provided")
 		return
 	}
 
 	// iterate over all the potential URLs provided
-	link := (*args)[1]
-
-	// Parse the link
-	_, err := url.Parse(link)
-	if err != nil {
-		utils.SendMessageFailure(s, m, "Invalid URL")
-		return
-	}
-
-	b, err := utils.FetchFromURL(&link)
-	if err != nil {
-		malm.Error("%s", err)
-		return
-	}
-
-	img, _, err := image.Decode(bytes.NewReader(b))
-	if err != nil {
-		utils.SendDirectMessage(s, m, fmt.Sprintf("Ban failed: '%s'", err))
-		return
-	}
-
-	var blacklist database.Blacklist
-
-	if err := blacklist.New(img, link); err != nil {
-		utils.SendDirectMessage(s, m, fmt.Sprintf("Ban failed: '%s'", err))
-		return
-	}
-
-	if err := blacklist.Save(); err != nil {
-		if strings.Contains(err.Error(), "UNIQUE constraint failed") {
-			go utils.SendMessageNeutral(s, m, "Already banned")
-		} else {
-			utils.SendDirectMessage(s, m, fmt.Sprintf("Unhandled DB error: '%s'", err))
-			malm.Error("Unhandled DB error: '%s'", err)
+	for _, link := range (*args)[1:] {
+		// Parse the link
+		_, err := url.Parse(link)
+		if err != nil {
+			utils.SendMessageFailure(s, m, "Invalid URL")
 			return
 		}
-	} else {
-		go utils.SendMessageSuccess(s, m, "Ban successful")
+
+		b, err := utils.FetchFromURL(&link)
+		if err != nil {
+			malm.Error("%s", err)
+			return
+		}
+
+		img, _, err := image.Decode(bytes.NewReader(b))
+		if err != nil {
+			utils.SendDirectMessage(s, m, fmt.Sprintf("Ban failed: '%s'", err))
+			return
+		}
+
+		var blacklist database.Blacklist
+
+		if err := blacklist.New(img, link); err != nil {
+			utils.SendDirectMessage(s, m, fmt.Sprintf("Ban failed: '%s'", err))
+			return
+		}
+
+		if err := blacklist.Save(); err != nil {
+			if strings.Contains(err.Error(), "UNIQUE constraint failed") {
+				msg, err := utils.SendMessageNeutral(s, m, "Already banned")
+				if err == nil {
+					go func() {
+						utils.RemoveMessageAfter(s, msg.ChannelID, msg.ID)
+					}()
+				}
+			} else {
+				utils.SendDirectMessage(s, m, fmt.Sprintf("Unhandled DB error: '%s'", err))
+				malm.Error("Unhandled DB error: '%s'", err)
+				return
+			}
+		} else {
+			msg, err := utils.SendMessageSuccess(s, m, "Ban successful")
+			if err == nil {
+				go func() {
+					utils.RemoveMessageAfter(s, msg.ChannelID, msg.ID)
+				}()
+			}
+		}
 	}
 
 	utils.RemoveMessage(s, m)
