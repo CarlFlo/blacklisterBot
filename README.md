@@ -76,7 +76,7 @@ Running the bot will create a `config.json` file in the directory where it was r
 Insert:
 1. The bot token
 2. The Discord user ID for the user(s) that are allowed to run the commands
-3. The bots ID
+3. The ID of the bot
 
 #### Thresholds
 Each individual detection thresholds can be edited in the configuration file.
