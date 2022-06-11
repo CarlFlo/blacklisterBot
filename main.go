@@ -13,13 +13,13 @@ import (
 	"github.com/CarlFlo/malm"
 )
 
-const CurrentVersion = "2022-06-06"
+const CurrentVersion = "2022-06-11"
 
 func init() {
 
 	utils.Clear()
 
-	//malm.SetLogVerboseBitmask(0)
+	malm.SetLogVerboseBitmask(35) // Debug, Info & Warning
 
 	if err := config.LoadConfiguration(); err != nil {
 		malm.Fatal("Error loading configuration: %v", err)

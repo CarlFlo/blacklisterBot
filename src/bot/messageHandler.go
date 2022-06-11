@@ -80,7 +80,7 @@ func check(s *discordgo.Session, m *discordgo.MessageCreate, link *string) {
 
 func findURLInMessage(m *discordgo.MessageCreate) []string {
 
-	// regex
+	// regex - Detects an url containing an image
 	r := regexp.MustCompile(`(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|jpeg|png)`)
 	matches := r.FindAllString(m.Message.Content, -1)
 	return matches

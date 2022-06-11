@@ -25,7 +25,7 @@ func Ban(s *discordgo.Session, m *discordgo.MessageCreate, args *[]string) {
 		return
 	}
 
-	// itterate over all the potential URLs provided
+	// iterate over all the potential URLs provided
 	link := (*args)[1]
 
 	// Parse the link
