@@ -22,6 +22,7 @@ func StartBot() {
 
 	// Adds message handler (https://github.com/bwmarrin/discordgo/blob/37088aefec2241139e59b9b804f193b539be25d6/eventhandlers.go#L937)
 	Session.AddHandler(messageHandler)
+	Session.AddHandler(readyHandler)
 
 	// Attempts to open connection
 	err = Session.Open()

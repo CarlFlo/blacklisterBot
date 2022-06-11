@@ -14,7 +14,7 @@ import (
 func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	// Ignore messages from bots
-	if config.CONFIG.IgnoreBotMessages && m.Author.Bot {
+	if config.CONFIG.Settings.IgnoreBotMessages && m.Author.Bot {
 		return
 	}
 

@@ -9,14 +9,13 @@ import (
 var CONFIG *configStruct
 
 type configStruct struct {
-	Token             string     `json:"token"`
-	BotPrefix         string     `json:"botPrefix"`
-	TrustedUsersIDs   []string   `json:"trustedUsersIDs"`
-	Thresholds        thresholds `json:"thresholds"`
-	IgnoreBotMessages bool       `json:"ignoreBotMessages"`
-	BotInfo           botInfo    `json:"botInfo"`
-	Database          database   `json:"database"`
-	Settings          settings   `json:"settings"`
+	Token           string     `json:"token"`
+	BotPrefix       string     `json:"botPrefix"`
+	TrustedUsersIDs []string   `json:"trustedUsersIDs"`
+	Thresholds      thresholds `json:"thresholds"`
+	BotInfo         botInfo    `json:"botInfo"`
+	Database        database   `json:"database"`
+	Settings        settings   `json:"settings"`
 }
 
 type botInfo struct {
@@ -37,6 +36,7 @@ type thresholds struct {
 
 type settings struct {
 	LogRemovalInConsole   bool          `json:"logRemovalInConsole"`
+	IgnoreBotMessages     bool          `json:"ignoreBotMessages"`
 	RemoveBotMessageAfter time.Duration `json:"removeBotMessageAfter"`
 }
 
@@ -61,11 +61,10 @@ func createConfig() error {
 
 	// Default config settings
 	configStruct := configStruct{
-		Token:             "",
-		BotPrefix:         ",",
-		TrustedUsersIDs:   []string{},
-		Thresholds:        thresholds{Average: 10, Difference: 10, Perception: 10},
-		IgnoreBotMessages: true,
+		Token:           "",
+		BotPrefix:       ",",
+		TrustedUsersIDs: []string{},
+		Thresholds:      thresholds{Average: 10, Difference: 10, Perception: 10},
 		BotInfo: botInfo{
 			AppID:      "",
 			Permission: 142342, // https://discordapi.com/permissions.html#142342
@@ -76,6 +75,7 @@ func createConfig() error {
 		},
 		Settings: settings{
 			LogRemovalInConsole:   true,
+			IgnoreBotMessages:     true,
 			RemoveBotMessageAfter: 3,
 		},
 	}
