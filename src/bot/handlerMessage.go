@@ -56,10 +56,29 @@ func checkAttachments(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	for _, att := range m.Message.Attachments {
-		switch att.ContentType {
-		case "image/png", "image/jpeg":
-			check(s, m, &att.URL)
 
+		malm.Info("%s", att.ContentType)
+
+		attArgs := strings.Split(att.ContentType, "/")
+
+		// The first index should be 'image' or 'video'
+		switch attArgs[0] {
+		case "image":
+			switch attArgs[1] {
+			case "png", "jpeg", "jpg":
+				check(s, m, &att.URL)
+			case "gif":
+				malm.Debug("GIFs are not supported")
+			default:
+				malm.Debug("Unknown image type: %s", att.ContentType)
+			}
+		case "video":
+			switch attArgs[1] {
+			case "mp4", "webm", "quicktime":
+				malm.Debug("Video is not supported")
+			default:
+				malm.Debug("Unknown video type: %s", att.ContentType)
+			}
 		default:
 			malm.Debug("Unknown content type: %s", att.ContentType)
 		}

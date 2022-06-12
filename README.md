@@ -37,15 +37,23 @@ All data is stored in a local SQLite database
 
 * Automatic removal of inappropriate images
 
-* Smart detection that can detect subtle changes
+* Intelligent detection which can detect subtle changes
+
+* Works with: PNG, JPEG, JPG, WEBP (Does not support video)
+
+### How it works
+
+The first thing the bot does when an image is posted in a chat is to 
+1. Download the image
+2. Calcualte the SHA-1 hash
+3. Check that hash against the database
+4.
 
 ## Commands
 
 * Ban
 
 Bans the provided image. Can be an URL or uplaoded as an attachment
-
-Supported formats are: PNG & JPEG
 
 * Unban 
 
@@ -89,6 +97,7 @@ Going too high (around 30) will yeild a lot of false positives.
 ## Todo
 
 - [X] Basic functionality
+- [ ] Gif support
 - [ ] List of channels that the bot will ignore alt. listen to
 - [ ] Make the bot aware of what discord server it is in
 - [ ] Automated action once banned image is posted (banned, kick, timeout etc)

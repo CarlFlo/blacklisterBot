@@ -19,9 +19,10 @@ func SearchSHA1(h *string) (bool, error) {
 
 func SearchAveragePerceptionDifference(aHash, dHash, pHash *goimagehash.ImageHash, method *string) (bool, error) {
 
-	i := 0
+	// How many get from the database
 	queryMax := 50
 
+	i := 0
 	for {
 
 		var blacklist []Blacklist
