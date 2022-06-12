@@ -57,12 +57,15 @@ func Unban(s *discordgo.Session, m *discordgo.MessageCreate, args *[]string) {
 		hasher.Write(buf.Bytes())
 		SHA1 := fmt.Sprintf("%x", hasher.Sum(nil))
 
-		malm.Info("Removing SHA1: %s", SHA1)
-
 		if err := database.DB.Delete(&database.Blacklist{}, "sha1 = ?", SHA1).Error; err != nil {
 			malm.Error("Could not delete: '%s'", err)
 		}
 	}
 
 	utils.RemoveMessage(s, m)
+	msg, err := utils.SendMessageSuccess(s, m, "Unban successful")
+	if err == nil {
+		utils.RemoveMessageAfter(s, msg.ChannelID, msg.ID)
+	}
+
 }

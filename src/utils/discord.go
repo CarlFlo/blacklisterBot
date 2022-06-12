@@ -44,15 +44,18 @@ func RemoveMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 // Removes a message after n seconds.
 // If RemoveBotMessageAfter in the config is -1 then the message wont be deleted
+// Function automatically run as a goroutine
 func RemoveMessageAfter(s *discordgo.Session, channelID, messageID string) {
 
-	if config.CONFIG.Settings.RemoveBotMessageAfter < 0 {
-		return
-	}
+	go func() {
+		if config.CONFIG.Settings.RemoveBotMessageAfter < 0 {
+			return
+		}
 
-	time.Sleep(config.CONFIG.Settings.RemoveBotMessageAfter * time.Second)
+		time.Sleep(config.CONFIG.Settings.RemoveBotMessageAfter * time.Second)
 
-	if err := s.ChannelMessageDelete(channelID, messageID); err != nil {
-		malm.Error("Could not delete the message: %s", err)
-	}
+		if err := s.ChannelMessageDelete(channelID, messageID); err != nil {
+			malm.Error("Could not delete the message: %s", err)
+		}
+	}()
 }

@@ -57,9 +57,7 @@ func Ban(s *discordgo.Session, m *discordgo.MessageCreate, args *[]string) {
 			if strings.Contains(err.Error(), "UNIQUE constraint failed") {
 				msg, err := utils.SendMessageNeutral(s, m, "Already banned")
 				if err == nil {
-					go func() {
-						utils.RemoveMessageAfter(s, msg.ChannelID, msg.ID)
-					}()
+					utils.RemoveMessageAfter(s, msg.ChannelID, msg.ID)
 				}
 			} else {
 				utils.SendDirectMessage(s, m, fmt.Sprintf("Unhandled DB error: '%s'", err))
@@ -69,9 +67,7 @@ func Ban(s *discordgo.Session, m *discordgo.MessageCreate, args *[]string) {
 		} else {
 			msg, err := utils.SendMessageSuccess(s, m, "Ban successful")
 			if err == nil {
-				go func() {
-					utils.RemoveMessageAfter(s, msg.ChannelID, msg.ID)
-				}()
+				utils.RemoveMessageAfter(s, msg.ChannelID, msg.ID)
 			}
 		}
 	}
